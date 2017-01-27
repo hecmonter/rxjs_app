@@ -1,0 +1,28 @@
+{
+  "name": "rxjs_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --watch --inline"   
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hecmonter/rxjs_app.git"
+  },
+  "author": "Hector Montero",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hecmonter/rxjs_app/issues"
+  },
+  "homepage": "https://github.com/hecmonter/rxjs_app#readme",
+  "dependencies": {
+    "rxjs": "^5.0.3"
+  },
+  "devDependencies": {
+    "ts-loader": "^2.0.0",
+    "types": "^0.1.1",
+    "webpack": "^2.2.0",
+    "webpack-dev-server": "^2.2.0"
+  }
+}
