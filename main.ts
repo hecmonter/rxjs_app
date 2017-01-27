@@ -1,22 +1,23 @@
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 
 let numbers = [1, 5, 10, 20]; 
-let source = Observable.from(numbers);
 
-class MyObserver {
-    next(value) {
-        console.log(`Value : ${value}`); 
-    }
+let source = Observable.create((observer: Observer<number>) => {
+    let index = 0;
+    let produceValue = () => {
+        observer.next(numbers[index++]);
+        if(index < numbers.length){
+            setTimeout(produceValue, 2000);
+        } else {
+            observer.complete();
+        }
+    }; 
+    produceValue();
+    
+});
 
-    error(e) {
-        console.log(`error: ${e}`); 
-    }
-
-    complete() {
-        console.log(`Complete`); 
-    }
-
-}
-
-source.subscribe(new MyObserver());
-source.subscribe(new MyObserver());
+source.subscribe(
+    value => console.log(`Value : ${value}`),
+    e => console.log(`error: ${e}`),
+    () => console.log(`complete`)
+);
