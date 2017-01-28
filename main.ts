@@ -1,22 +1,33 @@
 import { Observable } from 'rxjs';
+// import { Observer } from 'rxjs/Observer';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/filter';
 
-let numbers = [1, 5, 10, 20]; 
-let source = Observable.from(numbers);
+let numbers: number[] = [1, 5, 10, 20]; 
+let source: Observable<any>;
+let circle = document.getElementById('circle');
 
-class MyObserver {
-    next(value) {
-        console.log(`Value : ${value}`); 
-    }
+source = Observable.fromEvent(document, 'mousemove')
+                    .map((e: MouseEvent) => {
+                            return {
+                                x: e.clientX,
+                                y: e.clientY
+                            }
+                    })
+                    .filter(value => value.x < 500)
+                    .delay(300);
 
-    error(e) {
-        console.log(`error: ${e}`); 
-    }
-
-    complete() {
-        console.log(`Complete`); 
-    }
-
+function onNext(value){    
+    circle.style.left = `${value.x}px`;
+    circle.style.top = `${value.y}px`;
 }
 
-source.subscribe(new MyObserver());
-source.subscribe(new MyObserver());
+function onError(e){
+    console.log(`error: ${e}`);
+}
+
+function onComplete(){
+    console.log(`complete`);
+}
+
+source.subscribe(onNext, onError, onComplete);
