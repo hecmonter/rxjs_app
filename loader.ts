@@ -21,18 +21,28 @@ export function load(url) {
 export function loadWithFetch(url: string) {
     // to make it lazy, like load() function 
     return Observable.defer(()=> {
-        return Observable.fromPromise(fetch(url).then(r => r.json()));
-    });    
+        return Observable.fromPromise(fetch(url).then(r => {
+            if(r.status === 200){
+                return r.json();
+            } else {
+                return Promise.reject(r);
+            }
+        }));        
+    })
+    .retryWhen(retryStrategy());    
 }
 
-function retryStrategy({ attemps = 3, delay = 1000 }){
+function retryStrategy({attemps=3, delay=1000 } = {}){
     return function(errors){
         return errors
-                .scan((acc, value) => {
-                    console.log(acc, value); 
-                    return acc + 1; 
-                }, 0)
-                .takeWhile(acc => acc < attemps )
+                .scan((acc, response) => {                                        
+                    acc++;
+                    if(acc < attemps){
+                        return acc; 
+                    } else {
+                        throw new Error(response); 
+                    }                    
+                }, 0)                
                 .delay(delay);
     }
 }

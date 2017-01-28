@@ -29,7 +29,11 @@ function onNext(value) {
 
 // load('movies.json'); // not request execution until somebody subscribes to the observable.
 
-// loadWithFetch('movies.json'); // executes inmediately, even though not subscribers to the  observable.
+// executes inmediately, even though not subscribers to the  observable.
+loadWithFetch('moviess.json')
+    .subscribe(renderMovies,
+        e => console.log(`error: ${e}`), 
+        () => console.log('complete!')); 
 
 clickStream.flatMap(e => loadWithFetch('movies.json'))
-    .subscribe(renderMovies, onError, onComplete)
+    .subscribe(renderMovies, onError, onComplete);
