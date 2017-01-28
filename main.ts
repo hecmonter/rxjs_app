@@ -1,22 +1,43 @@
 import { Observable } from 'rxjs';
 
-let numbers = [1, 5, 10, 20]; 
-let source = Observable.from(numbers);
+let output = document.getElementById('output');
+let button = document.getElementById('button');
 
-class MyObserver {
-    next(value) {
-        console.log(`Value : ${value}`); 
-    }
+let clickStream = Observable.fromEvent(button, 'click');
 
-    error(e) {
-        console.log(`error: ${e}`); 
-    }
-
-    complete() {
-        console.log(`Complete`); 
-    }
-
+function load(url) {
+    return Observable.create(observer => {
+        let xhr = new XMLHttpRequest();
+        xhr.addEventListener('load', () => {
+            let data = JSON.parse(xhr.responseText);
+            observer.next(data);
+            observer.complete();
+        });
+        xhr.open("GET", url);
+        xhr.send();
+    });
 }
 
-source.subscribe(new MyObserver());
-source.subscribe(new MyObserver());
+function renderMovies(movies){
+    movies.forEach(m => {
+        let div = document.createElement('div');
+        div.innerText = m.title;
+        output.appendChild(div);
+    });
+}
+
+function onError(e){
+    console.error(e);
+}
+
+function onComplete(){
+    console.log('complete');
+}
+
+function onNext(value) {
+    console.log(value);
+}
+
+
+clickStream.flatMap(e => load('movies.json'))
+           .subscribe(renderMovies, onError, onComplete)
