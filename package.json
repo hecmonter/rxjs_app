@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --watch --inline"   
+    "start": "webpack-dev-server --watch --inline"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/hecmonter/rxjs_app#readme",
   "dependencies": {
+    "@types/whatwg-fetch": "0.0.33",
+    "@types/whatwg-streams": "0.0.2",
     "rxjs": "^5.0.3"
   },
   "devDependencies": {

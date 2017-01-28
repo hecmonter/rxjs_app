@@ -6,3 +6,5 @@ import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/takeWhile';
 import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/defer';
