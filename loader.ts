@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs/Observable';
 import './rxjs-extensions';
 
-export function load(url) {
+export function load(url: string): Observable<Response> {
     return Observable.create(observer => {
         let xhr = new XMLHttpRequest();
-        xhr.addEventListener('load', () => {
+        let onLoad = () => {
             if (xhr.status === 200) {
                 let data = JSON.parse(xhr.responseText);
                 observer.next(data);
@@ -12,9 +12,19 @@ export function load(url) {
             } else {
                 observer.error(xhr.statusText);
             }
-        });
+        }; 
+
+        xhr.addEventListener('load', onLoad );
         xhr.open("GET", url);
         xhr.send();
+
+        // make observable return a function with unsubscribe logic.
+        return () => {
+            console.log('Unsubscribing observable');
+            xhr.removeEventListener('load', onLoad);
+            xhr.abort();
+        }
+
     }).retryWhen(retryStrategy({attemps: 3, delay: 1500 }));
 }
 
@@ -33,7 +43,7 @@ export function loadWithFetch(url: string) {
 }
 
 function retryStrategy({attemps=3, delay=1000 } = {}){
-    return function(errors){
+    return function(errors) {
         return errors
                 .scan((acc, response) => {                                        
                     acc++;

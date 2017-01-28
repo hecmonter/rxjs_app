@@ -1,4 +1,6 @@
 import { Observable } from 'rxjs/Observable';
+import { Subscriber } from 'rxjs/Subscriber';
+import { Subscription } from 'rxjs/Subscription';
 import './rxjs-extensions';
 import { load, loadWithFetch } from './loader';
 
@@ -16,7 +18,7 @@ function renderMovies(movies) {
 }
 
 function onError(e) {
-    console.error(e);
+    console.error('error: %O', e);
 }
 
 function onComplete() {
@@ -27,13 +29,20 @@ function onNext(value) {
     console.log(value);
 }
 
-// load('movies.json'); // not request execution until somebody subscribes to the observable.
+// not request execution until somebody subscribes to the observable.
+let s: Subscription = load('moviesas.json')
+    .subscribe(
+            renderMovies,
+            e => console.log(e),
+            () => console.log('complete')
+        );
+    s.unsubscribe();
 
 // executes inmediately, even though not subscribers to the  observable.
-loadWithFetch('moviess.json')
-    .subscribe(renderMovies,
-        e => console.log(`error: ${e}`), 
-        () => console.log('complete!')); 
+// loadWithFetch('movies.json')
+//     .subscribe(renderMovies,
+//         e => console.log(`error: ${e}`),
+//         () => console.log('complete!'));
 
 clickStream.flatMap(e => loadWithFetch('movies.json'))
     .subscribe(renderMovies, onError, onComplete);
